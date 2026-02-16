@@ -1,0 +1,3 @@
+**Kryptografie a počítačová bezpečnost 
+
+Předmět se zabývá základními principy a algoritmy bezpečnostních technik a protokolů. V předmětu se studenti seznámí se především se základními pojmy z bezpečnosti IT, s algoritmy symetrické a asymetrické kryptografie a jejich matematickým základem, s kryptografickými hashovacími funkcemi a jejich vlastnostmi, s algoritmy pro digitální podpis a kryptografií na bázi eliptických křivek, se správou klíčů. Nedílnou součástí výkladu je také přehled nejdůležitějších standardů a hodnotících kriterií, neopomíjí se problematika počítačové kriminality a legislativních aspektů bezpečnosti IT. 
