@@ -1,10 +1,3 @@
-"""
-Dešifrování sloupcové transpozice (columnar transposition) českého textu.
-Zkouší různé počty sloupců a permutace, hodnotí výsledek pomocí českých bigramů.
-
-Výsledek: 5 sloupců, šifrovací permutace [2, 0, 3, 4, 1], dešifrovací [1, 4, 0, 2, 3].
-"""
-
 from itertools import permutations
 
 CIPHERTEXT = (
@@ -18,7 +11,7 @@ CIPHERTEXT = (
     "NSDIUCAOEPKZFNDKTAUCZTUNIEACYIUQ"
 )
 
-# České bigramy s jejich relativními frekvencemi
+# České bigramy s jejich relativními frekvencemi - vymyšlená
 CZECH_BIGRAMS = {
     'NI': 3.0, 'NE': 3.0, 'NA': 3.0, 'NO': 2.5, 'NU': 1.5,
     'JE': 3.0, 'JA': 2.0, 'JI': 2.0,
@@ -156,21 +149,6 @@ def main():
     print()
     print("Otevřený text (bez mezer):")
     print(best_pt)
-    print()
-    print("Otevřený text (s mezerami):")
-    print(
-        "LIDE VE VLACICH CD STAHUJI MOC DAT OPERATOR JENEZ LEVNI NAOPAK "
-        "JE OMEZI ZAKAZNICI CESKYCH DRAH E NA SOCIALNICH SITICH PODIVUJI "
-        "NAD ZVAZOVANYM OMEZENIM DAT STAHOVANYCHPRESWIFI VE VLACICH "
-        "POPISUJI ZKUSENOSTI S POMALYM A NESTABILNIM PRIPOJENIM PARADOXNE "
-        "TAK BYLA POPRENA ORIGINALNI EKONOMICKA TEORIE MINISTRYNE "
-        "MARTYNOVAKOVE KDY VICE STAZENYCH DAT ZNAMENA JEJICH ZLEVNENI "
-        "CO TAM KDO STAHUJE VZDYT SIGNAL FURT PADA A JE TO POMALE "
-        "TO MAM RYCHLEJSI MOBILNI POPSAL JEDEN Z DISKUTUJICICH NA "
-        "FACEBOOKU UMELE SPON TAKR KA VZDYNE FUNKCNI ZNI DALSI KOMENTAR "
-        "NA ADRESU WIFI CD OMEZIT DATA VICUZ TO SNAD ANI NEJDE "
-        "NEPTA SE RECNICKY DALSI CESTUJICI QQ"
-    )
 
 
 if __name__ == "__main__":
