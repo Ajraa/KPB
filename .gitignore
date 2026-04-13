@@ -2,7 +2,3 @@
 *.jpg
 *.zip
 *.enc
-*.txt
-*.md
-__pycache__/
-.claude/

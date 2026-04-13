@@ -1,10 +1,4 @@
-"""
-Vernamova šifra (OTP) s opakovaným klíčem - kryptanalýza.
-Dva šifrové texty C1, C2 byly zašifrovány stejným klíčem K.
-Hledáme otevřené texty M1, M2 a klíč K.
-"""
-
-import urllib.request
+import os
 import string
 
 # Šifrové texty
@@ -15,47 +9,18 @@ C2 = [0x2c, 0x11, 0x1c, 0x06, 0x14, 0x1b, 0x07, 0x00, 0x00, 0x12, 0x1a, 0x00]
 C1_xor_C2 = [a ^ b for a, b in zip(C1, C2)]
 print("C1 XOR C2 =", [hex(x) for x in C1_xor_C2])
 
-# Krok 2: Načtení slovníku 12-písmenných slov
+# Krok 2: Načtení slovníku 12-písmenných slov z lokálního souboru dic.txt
 def load_words():
-    """Načte 12-písmenná anglická slova z různých zdrojů."""
+    """Načte 12-písmenná anglická slova z lokálního souboru dic.txt."""
     words = set()
-
-    # Zkusíme stáhnout slovník z webu
-    urls = [
-        "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt",
-        "https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english.txt",
-    ]
-
-    for url in urls:
-        try:
-            print(f"Stahuji slovník z {url}...")
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            response = urllib.request.urlopen(req, timeout=15)
-            text = response.read().decode("utf-8", errors="ignore")
-            for line in text.splitlines():
-                w = line.strip().lower()
-                if len(w) == 12 and w.isalpha():
-                    words.add(w)
-            print(f"  Načteno {len(words)} slov délky 12.")
-            if len(words) > 100:
-                break
-        except Exception as e:
-            print(f"  Chyba: {e}")
-
-    # Záložní varianta - zkusíme NLTK
-    if len(words) < 100:
-        try:
-            import nltk
-            nltk.download("words", quiet=True)
-            from nltk.corpus import words as nltk_words
-            for w in nltk_words.words():
-                wl = w.lower()
-                if len(wl) == 12 and wl.isalpha():
-                    words.add(wl)
-            print(f"  NLTK: celkem {len(words)} slov délky 12.")
-        except Exception as e:
-            print(f"  NLTK nedostupné: {e}")
-
+    dic_path = os.path.join(os.path.dirname(__file__), "dic.txt")
+    print(f"Načítám slovník z {dic_path}...")
+    with open(dic_path, encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            w = line.strip()
+            if len(w) == 12 and w.isalpha():
+                words.add(w)
+    print(f"  Načteno {len(words)} slov délky 12.")
     return words
 
 
@@ -99,9 +64,6 @@ def main():
 
     # Slovník pro rychlé vyhledávání (lowercase)
     words_lower = {w.lower() for w in words}
-
-    print(f"\nHledám páry M1, M2 (slovník: {len(words)} slov, varianty: {len(all_variants)})...\n")
-
     found = []
 
     for w1 in all_variants:
@@ -136,10 +98,6 @@ def main():
                 print()
 
     if not found:
-        print("Nenalezen žádný platný pár M1, M2 s platným klíčem K.")
-        print("Zkouším bez podmínky na klíč (klíč nemusí být slovo ze slovníku)...")
-        print()
-
         for w1 in all_variants:
             m1_bytes = word_to_bytes(w1)
             m2_bytes = xor_bytes(m1_bytes, C1_xor_C2)
@@ -154,10 +112,6 @@ def main():
                 key_is_alpha = is_alpha_word(key_bytes)
                 found.append((w1, m2, key_word))
                 print(f"  M1 = {w1}, M2 = {m2}, K = {key_word} (písmena: {key_is_alpha})")
-
-    if not found:
-        print("\nŽádný pár nenalezen ani bez podmínky na klíč.")
-        print("Klíče jsou pravděpodobně různé, nebo slova nejsou ve slovníku.")
 
     # Ověření
     if found:

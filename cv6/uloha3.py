@@ -1,7 +1,3 @@
-"""
-Vigenèrova šifra — kryptoanalýza pomocí Kasiski testu, indexu koincidence a chi-squared testu.
-"""
-
 import math
 from collections import Counter
 from itertools import combinations
@@ -11,7 +7,7 @@ CIPHERTEXT = (
     "IAKMIIMSSVLIMSLBEEJEKMMMELOAMTLMSKOJXHWKIJYRJXGKMOFHJAISMLGYVIKMJFVMSGCTLRALXZENKXEJXEJBWRGEDXFIETAHRFJTZXXIMUEILFJLAYIFZEJWIRXHSGHRZEJRMDTOJMEEXTAFIFJTZXCVERETRPROFVLIMSLBEEWADLSYEVWTLFPIVTCRXTZBWKMMWLSZXIKTTFTUDTVKMMWMSKVANXPFVSHXRUAILAJIMEFWWRRDXTQZPYOXWVILGMWFJSQFFFPSGYRVALAYIRXESLXVVEKIITMADECVKGKVLZGKKYPFAEJLEEHRSUFZXSLAIJISQFFFPSYHFRGKLHEEGIWGXGEGSGXIEDAMMFRSOAMTLCWEISVALXHWIRLBPZXYJXFZVTZTRUREOZVFATZTJKIRLAICSNYPMEXEJFSEXHKMLVHALXWFJESLXVVCZTRXIFJHQPIAJMSPIAJUYKMTMLYRPLQYECPSKHQVXIEXFVXWWXRKLEWGHFJMSKGYENVMLVINVHJRTRAEMEAEKMIIRCZKMJXISGMKCESLXVVSMGHRCIKMLVJIJLXJYNVTCRJTWKXYIFAKWKJUDEQFSNGYWGVIFZAYMCZLXRVTKHRDERUAXYIESLXVVNGKXYSDGQGYYRUAIJAHAVLLWESWMWJEJXRKGADXRUERZTZVESDBKYXLQWMWJEJXRKAAQHJTELUNPRXIFZIRWTWKEEHUKNECPYUXPVFRSMIVESLXVRPILMPVIAJEMVVOJEEKIRLAINIECUIWSRWXEJXEJBWTELDXHYSLQPIVOTZXJZVSLWEPSFZHPPAEWDMJTADFWLRDSRAYMCZBWKLEKNRUEYTXJFVEWTWKIRETRPGHJBWKMAFLGVPETKEKITZBWRWTZXHRCTZTXAISMLIEXEJXHAIRMLECIMSGHGIOHEIKLRWPHFANTKEEGHWLJISMHTPDXRWXWFRTZXVFEDLHAVPCGFIYMMXHYIHAQLPRXEJBWDEUFWCKLUJLHRCWZBGYQAJDWKLEDTWKWUHIIIAHWGNVWUKTXVFRWTHRRDVKEEOWAGINMTZAMJXWWEZVHIKVMGPEKMLVJODESNMNYWEPMSYHSUJRAWEPAHAVLZWSAZRZJIUTRKJOJVLIMSLBEEWAKMLVHAQMLRXJWLYJAAKIYKXOVXEKLOFMLVGRGLWDENQVLIMSLBEEWBWEMVZELAEKNEKNWNESCBPCIDSGHSYRAXHZRALHQSSNLAIWVIVTCRRDLAEKKOVKEZWEVAMDJRGFXYIDWTHFRTZXWLRDSRWFIAKMIIWUFWEPMSSVICIBJTXZSNGYXYIRWLYIVEUMMFROXCIJYS"
 )
 
-# Frekvenční distribuce anglického jazyka
+# Frekvenční distribuce anglického jazyka z Wikipedie
 ENGLISH_FREQ = {
     'A': 0.08167, 'B': 0.01492, 'C': 0.02782, 'D': 0.04253, 'E': 0.12702,
     'F': 0.02228, 'G': 0.02015, 'H': 0.06094, 'I': 0.06966, 'J': 0.00153,
@@ -44,10 +40,6 @@ def find_repeated_sequences(text, min_len=3, max_len=6):
 
 def kasiski_test(text):
     """Provede Kasiski test — najde opakující se sekvence, spočítá vzdálenosti a GCD."""
-    print("=" * 70)
-    print("1) KASISKI TEST")
-    print("=" * 70)
-
     sequences = find_repeated_sequences(text, min_len=3, max_len=5)
 
     # Filtr — jen sekvence s >= 2 výskyty
@@ -80,10 +72,8 @@ def kasiski_test(text):
             if d % f == 0:
                 factor_counts[f] += 1
 
-    print(f"\nFaktory vzdáleností (kolikrát je vzdálenost dělitelná faktorem):")
     for f in range(2, 9):
-        bar = "#" * (factor_counts[f] // 10)
-        print(f"  {f}: {factor_counts[f]:>5}x  {bar}")
+        print(f"  {f}: {factor_counts[f]:>5}")
 
     # Celkové GCD nejdelších sekvencí
     long_distances = []
@@ -115,13 +105,7 @@ def calc_ic(text):
 
 def ic_analysis(text):
     """Spočítá IC pro různé délky klíče a vybere nejpravděpodobnější."""
-    print("\n" + "=" * 70)
-    print("2) INDEX KOINCIDENCE (IC)")
-    print("=" * 70)
 
-    # IC angličtiny ~ 0.0667, náhodný text ~ 0.0385
-    print(f"\nOčekávaný IC pro angličtinu: ~0.0667")
-    print(f"Očekávaný IC pro náhodný text: ~0.0385")
     print(f"\n{'Délka klíče':<15} {'Průměrný IC':<15} {'Odchylka od 0.0667':<20}")
     print("-" * 50)
 
@@ -151,9 +135,6 @@ def ic_analysis(text):
 
 def chi_squared_test(text, key_len):
     """Pro každou pozici klíče najde nejlepší posun pomocí chi-squared testu."""
-    print("\n" + "=" * 70)
-    print("3) CHI-SQUARED TEST")
-    print("=" * 70)
 
     key = []
     expected_freq = [ENGLISH_FREQ[chr(i + ord('A'))] for i in range(26)]
@@ -210,22 +191,11 @@ def decrypt_vigenere(ciphertext, key):
 def main():
     text = CIPHERTEXT
     print(f"Délka šifrového textu: {len(text)} znaků\n")
-
-    # 1) Kasiski test
     kasiski_factors = kasiski_test(text)
-
-    # 2) Index koincidence
     best_key_len = ic_analysis(text)
-
-    # 3) Chi-squared test
     key = chi_squared_test(text, best_key_len)
-
-    # 4) Dešifrování
     plaintext = decrypt_vigenere(text, key)
 
-    print("\n" + "=" * 70)
-    print("4) VÝSLEDEK DEŠIFROVÁNÍ")
-    print("=" * 70)
     print(f"\nKlíč: {key}")
     print(f"Délka klíče: {len(key)}")
     print(f"\nOtevřený text:")
