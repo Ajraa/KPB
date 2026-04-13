@@ -4,3 +4,5 @@
 *.enc
 *.txt
 *.md
+__pycache__/
+.claude/
