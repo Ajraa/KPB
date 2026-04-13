@@ -2,3 +2,5 @@
 *.jpg
 *.zip
 *.enc
+__pycache__/
+.claude/
